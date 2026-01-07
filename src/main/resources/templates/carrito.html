@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MendoShop | Carrito</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .tittle-h1 {
+            text-align: center;
+            font-size: 2rem;
+            color: #333333;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .carrito-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .carrito-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background-color: #fafafa;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .carrito-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .carrito-img img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .carrito-detalle {
+            flex: 1;
+        }
+
+        .carrito-detalle h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #222;
+        }
+
+        .carrito-detalle p {
+            margin: 0.3rem 0;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .carrito-detalle strong {
+            color: #e41e26;
+            font-weight: 600;
+        }
+
+        .carrito-acciones {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .carrito-acciones button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .carrito-acciones button:hover {
+            opacity: 0.9;
+        }
+
+        .carrito-acciones form:first-child button {
+            background-color: #e41e26;
+            color: white;
+        }
+
+        .carrito-acciones form:last-child button {
+            background-color: #333;
+            color: white;
+        }
+
+        .carrito-total {
+            text-align: right;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            color: #222;
+        }
+
+        .boton-finalizar {
+            display: block;
+            margin: 1rem 0 0 auto;
+            padding: 0.7rem 1.5rem;
+            background-color: #e41e26;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .boton-finalizar:hover {
+            background-color: rgb(185, 71, 69);
+        }
+
+        .no-pedidos {
+            text-align: center;
+            background: white;
+            padding: 60px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-pedidos i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .no-pedidos h2 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .no-pedidos p {
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        .btn-volver {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #e41e26 0%, #640307 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-volver:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Toast */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #e41e26;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards, fadeOut 0.5s 2.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- CABECERA -->
+    <header class="top-bar">
+        <div class="logo-section">
+            <a href="index.html">
+                <img src="img/Logo.png" alt="MendoShop Logo" class="logo">
+            </a>
+        </div>
+
+        <nav class="user-section">
+            <p th:if="${session.usuario != null}">Bienvenido <span th:text="${session.usuario.getNombre()}"></span></p>
+            <a th:if="${session.usuario == null}" href="login.html"><i class="fas fa-user"></i> <span>Inicia sesión</span></a>
+            <a th:if="${session.usuario != null}" href="cerrar_sesion"><i class="fas fa-user"></i> <span>Cerrar sesión</span></a>
+            <a th:href="@{/pedidos}"><i class="fas fa-box"></i> <span>Mis pedidos</span></a>
+            <a th:href="@{/carrito}"><i class="fas fa-shopping-cart"></i>
+                <span th:text="${session.total != null ? session.total + ' €' : '0.00 €'}"></span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- CUERPO -->
+    <div th:if="${session.carrito == null or session.carrito.isEmpty()}" class="no-pedidos">
+        <i class="fas fa-shopping-basket"></i>
+        <h2>No tienes productos en el carrito</h2>
+        <a th:href="@{/index.html}" class="btn-volver">
+            <i class="fas fa-store"></i> Ir a la tienda
+        </a>
+    </div>
+
+    <main th:if="${session.carrito != null and !session.carrito.isEmpty()}">
+        <h1 class="tittle-h1">Tu carrito</h1>
+        <div class="carrito-container">
+
+            <div class="carrito-item" th:each="entry : ${carritoConProductos}">
+                <div class="carrito-img">
+                    <img th:src="${entry.key.urlImagen}" th:alt="${entry.key.nombre}">
+                </div>
+
+                <div class="carrito-detalle">
+                    <h3 th:text="${entry.key.nombre}"></h3>
+                    <p th:text="${entry.key.descripcion}"></p>
+                    <p>
+                        <strong th:if="${entry.key.esElegibleDescuento()}"
+                            th:text="${#numbers.formatDecimal(entry.key.aplicarDescuento(), 1, 'COMMA', 2, 'POINT') + ' €'}"></strong>
+
+                        <strong th:unless="${entry.key.esElegibleDescuento()}"
+                            th:text="${#numbers.formatDecimal(entry.key.precio * entry.key.peso, 1, 'COMMA', 2, 'POINT') + ' €'}"></strong>
+                    </p>
+                    <p>Cantidad: <span th:text="${entry.value}"></span></p>
+                </div>
+
+                <div class="carrito-acciones">
+                    <form th:action="@{/eliminar}" method="post">
+                        <input type="hidden" name="productoId" th:value="${entry.key.id}">
+                        <button type="submit">Quitar</button>
+                    </form>
+
+                    <!-- AJAX AGREGAR -->
+                    <form class="agregar-producto-form">
+                        <input type="hidden" name="productoId" th:value="${entry.key.id}">
+                        <button type="button" onclick="agregarProducto(this)">Agregar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="carrito-total">
+                Total: <span th:text="${#numbers.formatDecimal(session.total, 1, 'COMMA', 2, 'POINT') + ' €'}"></span>
+            </div>
+
+            <!-- NUEVO BOTÓN VACÍAR CARRITO -->
+            <button type="button" class="boton-finalizar" style="background:#333; margin-bottom:10px"
+                    onclick="vaciarCarrito()">Vaciar carrito</button>
+
+            <form th:action="@{/finalizar_compra}" method="post">
+                <button class="boton-finalizar">Finalizar compra</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">MENDOSHOP</div>
+            <div class="footer-copy">© 2025 Mendashop. Todos los derechos reservados.</div>
+        </div>
+    </footer>
+
+    <div id="toast-container"></div>
+
+    <!-- JavaScript AJAX -->
+    <script>
+        function mostrarToast(mensaje) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = mensaje;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function agregarProducto(button) {
+            const form = button.closest('form');
+            const productoId = form.querySelector('input[name="productoId"]').value;
+
+            fetch('/agregarProducto', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'productoId=' + productoId
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) {
+                    mostrarToast(data.error);
+                } else {
+                    const cantidadElem = button.closest('.carrito-item').querySelector('span');
+                    cantidadElem.textContent = data.cantidad;
+
+                    const totalElem = document.querySelector('.carrito-total span');
+                    totalElem.textContent = data.total + ' €';
+
+                    const headerTotal = document.querySelector('nav.user-section a[href$="/carrito"] span');
+                    headerTotal.textContent = data.total + ' €';
+                }
+            });
+        }
+
+function vaciarCarrito() {
+    fetch('/vaciar', { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            mostrarToast("Carrito vaciado");
+
+            // Vaciar la lista de productos
+            const container = document.querySelector('.carrito-container');
+            if(container) container.innerHTML = '';
+
+            // Actualizar total
+            const totalElem = document.querySelector('.carrito-total span');
+            if(totalElem) totalElem.textContent = "0.00 €";
+
+            const headerTotal = document.querySelector('nav.user-section a[href$="/carrito"] span');
+            if(headerTotal) headerTotal.textContent = "0.00 €";
+
+            // Ocultar main y mostrar mensaje "no hay productos"
+            const mainElem = document.querySelector('main');
+            if(mainElem) mainElem.style.display = "none";
+
+            // Mostrar div de no pedidos
+            let noPedidosDiv = document.querySelector('.no-pedidos');
+            if(noPedidosDiv) noPedidosDiv.style.display = "block";
+            else {
+                // Si no existe (por seguridad), crear uno dinámicamente
+                noPedidosDiv = document.createElement('div');
+                noPedidosDiv.className = "no-pedidos";
+                noPedidosDiv.innerHTML = `
+                    <i class="fas fa-shopping-basket"></i>
+                    <h2>No tienes productos en el carrito</h2>
+                    <a href="/index.html" class="btn-volver">
+                        <i class="fas fa-store"></i> Ir a la tienda
+                    </a>`;
+                document.body.insertBefore(noPedidosDiv, document.querySelector('footer'));
+            }
+        }
+    });
+}
+
+    </script>
+</body>
+
+</html>

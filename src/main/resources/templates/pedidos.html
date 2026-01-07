@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - Mendashop</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="../static/img/Logo.png" type="image/x-icon">
+
+    <style>
+        /* ====== Estilos ====== */
+        .main-container {
+            max-width: 1200px;
+            margin: 50px auto;
+        }
+        .pedidos-container { display: grid; gap: 25px; }
+        .pedido-card { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 25px; }
+        .pedido-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0; }
+        .pedido-info h2 { color: #333; font-size: 1.4rem; margin-bottom: 8px; }
+        .pedido-fecha { color: #666; font-size: 1rem; }
+        .pedido-estado { background: #e41e26; color: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; }
+        .pedido-estado.entregado { background: #28a745; }
+        .pedido-detalles { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .detalle-box { background: #f8f9fa; padding: 15px; border-radius: 10px; }
+        .detalle-box h3 { color: #333; margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .detalle-box p { color: #666; line-height: 1.5; }
+        .productos-section h3 { color: #333; margin-bottom: 15px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .productos-grid { display: grid; gap: 15px; }
+        .producto-item { display: flex; align-items: center; padding: 15px; border-radius: 10px; border: 1px solid #e0e0e0; transition: all 0.3s ease; }
+        .producto-imagen { width: 80px; height: 80px; margin-right: 20px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: #ddd; display: flex; align-items: center; justify-content: center; }
+        .producto-imagen img { width: 100%; height: 100%; object-fit: cover; }
+        .producto-info { flex: 1; }
+        .producto-info h4 { color: #333; margin-bottom: 5px; font-size: 1.1rem; }
+        .producto-detalles { display: flex; gap: 20px; flex-wrap: wrap; }
+        .producto-detalles span { color: #666; font-size: 0.9rem; }
+        .producto-precio { font-weight: bold; color: #e41e26 !important; }
+        .total-pedido { text-align: right; font-size: 1.3rem; font-weight: bold; color: #333; margin-top: 20px; padding-top: 15px; border-top: 2px solid #f0f0f0; }
+        .no-pedidos { text-align: center; background: white; padding: 60px 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .btn-volver { display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #e41e26 0%, #640307 100%); color: white; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; }
+        .btn-volver:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        @media (max-width: 768px) {
+            .pedido-detalles { grid-template-columns: 1fr; }
+            .pedido-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .producto-item { flex-direction: column; text-align: center; }
+            .producto-imagen { margin-right: 0; margin-bottom: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="top-bar">
+        <div class="logo-section">
+            <a href="index.html"><img src="img/Logo.png" alt="MendoShop Logo" class="logo"></a>
+        </div>
+        <div class="search-section">
+            <form action="" method="post">
+                <button class="search-icon" type="submit"><i class="fas fa-search"></i></button>
+                <input type="text" placeholder="Buscar productos...">
+            </form>
+        </div>
+        <nav class="user-section">
+            <p th:if="${session.usuario != null}">Bienvenido <span th:text="${session.usuario.getNombre()}"></span></p>
+            <a th:if="${session.usuario == null}" href="login.html"><i class="fas fa-user"></i> Inicia sesión</a>
+            <a th:if="${session.usuario != null}" href="cerrar_sesion"><i class="fas fa-user"></i> Cerrar sesión</a>
+            <a th:href="@{/pedidos}"><i class="fas fa-box"></i> Mis pedidos</a>
+            <a th:href="@{/carrito}"><i class="fas fa-shopping-cart"></i>
+                <span th:text="${session.total != null ? session.total + ' €' : '0.00 €'}"></span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- CUERPO -->
+    <main class="main-container">
+
+        <!-- Si no hay pedidos -->
+        <div th:if="${pedidos == null or #lists.isEmpty(pedidos)}" class="no-pedidos">
+            <i class="fas fa-shopping-basket"></i>
+            <h2>No tienes pedidos todavía</h2>
+            <a th:href="@{/index.html}" class="btn-volver">
+                <i class="fas fa-store"></i> Ir a la tienda
+            </a>
+        </div>
+
+        <!-- Si hay pedidos -->
+        <div th:if="${pedidos != null and !#lists.isEmpty(pedidos)}" class="pedidos-container">
+
+            <div th:each="pedido, iterStat : ${pedidos}" class="pedido-card">
+                <div th:if="${session.usuario.nombre == pedido.usuario.nombre}">
+
+                    <!-- Cabecera del pedido -->
+                    <div class="pedido-header">
+                        <div class="pedido-info">
+                            <h2>Pedido #<span th:text="${iterStat.index + 1}"></span></h2>
+                            <div class="pedido-fecha">
+                                <i class="fas fa-calendar-alt"></i>
+                                Realizado el <span th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></span>
+                                a las <span th:text="${#temporals.format(pedido.fechaPedido, 'HH:mm')}"></span>
+                            </div>
+                        </div>
+                        <div class="pedido-estado"
+                             th:classappend="${pedido.estado == 'ENTREGADO'} ? 'entregado' : 'en-camino'">
+                            <i th:class="${pedido.estado == 'ENTREGADO'} ? 'fas fa-check' : 'fas fa-truck'"></i>
+                            <span th:text="${pedido.estado}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Detalles -->
+                    <div class="pedido-detalles">
+                        <div class="detalle-box direccion-envio">
+                            <h3><i class="fas fa-map-marker-alt"></i> Dirección de envío</h3>
+                            <p th:text="${pedido.direccionEnvio}"></p>
+                        </div>
+                        <div class="detalle-box">
+                            <h3><i class="fas fa-clock"></i> Entrega estimada</h3>
+                            <p>
+                                <i class="fas fa-calendar-check"></i>
+                                <span th:text="${#temporals.format(pedido.fechaEntregaEstimada, 'dd/MM/yyyy')}"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Productos -->
+                    <div class="productos-section">
+                        <h3><i class="fas fa-shopping-bag"></i> Productos en este pedido</h3>
+                        <div class="productos-grid">
+                            <div th:each="entry : ${pedido.productos}" class="producto-item">
+                                <div class="producto-imagen">
+                                    <img th:src="@{${productosMap[entry.key].urlImagen}}"
+                                         th:alt="${productosMap[entry.key].nombre}">
+                                </div>
+                                <div class="producto-info">
+                                    <h4 th:text="${productosMap[entry.key].nombre}">Nombre del producto</h4>
+                                    <div class="producto-detalles">
+                                        <span class="producto-precio">
+                                            <i class="fas fa-tag"></i>
+                                            <span th:text="${#numbers.formatDecimal(productosMap[entry.key].precio, 1, 2, 'POINT')}"></span> €
+                                        </span>
+                                        <span>
+                                            <i class="fas fa-layer-group"></i>
+                                            Cantidad: <span th:text="${entry.value}"></span>
+                                        </span>
+                                        <span>
+                                            <i class="fas fa-list"></i>
+                                            Categoría: <span th:text="${productosMap[entry.key].categoria}"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="total-pedido">
+                        <i class="fas fa-receipt"></i>
+                        Total del pedido: <span th:text="${#numbers.formatDecimal(pedido.total, 1, 2, 'POINT')}"></span> €
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">MENDOSHOP</div>
+            <div class="footer-social">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">Política de privacidad</a>
+                <a href="#">Política de cookies</a>
+                <a href="#">Aviso legal</a>
+                <a href="#">Condiciones de compra</a>
+            </div>
+            <div class="footer-copy">© 2025 Mendashop. Todos los derechos reservados.</div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+/* GENERAL */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #f8f8f8;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 40px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 100px;
+  object-fit: contain;
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: #e60000;
+  letter-spacing: 1px;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* FORMULARIO */
+.register-container {
+  background-color: #fff;
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+
+.register-container h2 {
+  font-size: 26px;
+  margin-bottom: 50px;
+  color: #e60000;
+}
+
+.register-container span {
+  color: #c00000;
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 25px;
+}
+
+/* GRID DOS COLUMNAS */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 30px;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+  border-color: #e60000;
+  outline: none;
+  box-shadow: 0 0 5px rgba(230, 0, 0, 0.2);
+}
+
+/* BOTÓN */
+.btn-submit {
+  background-color: #e60000;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 25px;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+  background-color: #c00000;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+  color: #777;
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .register-container {
+    padding: 30px 25px;
+  }
+
+  .brand {
+    font-size: 20px;
+  }
+
+  .logo {
+    width: 40px;
+  }
+}

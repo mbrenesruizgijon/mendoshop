@@ -1,0 +1,41 @@
+[ {
+  "nombre" : "pedro",
+  "email" : "miguelangelbrenesorozco@gmail.com",
+  "contrasena" : "pedro",
+  "direccion" : "5",
+  "ciudad" : "3566",
+  "codigoPostal" : "41710",
+  "telefono" : "663458683"
+}, {
+  "nombre" : "miguel",
+  "email" : "miguelangelbrenesorozco@gmail.com",
+  "contrasena" : "miguel",
+  "direccion" : "5",
+  "ciudad" : "3566",
+  "codigoPostal" : "41710",
+  "telefono" : "663458683"
+}, {
+  "nombre" : "juan",
+  "email" : "juanas@gmail.com",
+  "contrasena" : "juan",
+  "direccion" : "Armonio 15",
+  "ciudad" : "Utrera",
+  "codigoPostal" : "48955",
+  "telefono" : "663458683"
+}, {
+  "nombre" : "fran",
+  "email" : "fran@gmail.com",
+  "contrasena" : "fran",
+  "direccion" : "Juan Ramon 3 B",
+  "ciudad" : "Utrera",
+  "codigoPostal" : "41710",
+  "telefono" : "1663458683"
+}, {
+  "nombre" : "Isabel",
+  "email" : "marisabelcurado.es@gmail.com",
+  "contrasena" : "Mikaesmuybonito.13",
+  "direccion" : "Caquita 02",
+  "ciudad" : "Utrera",
+  "codigoPostal" : "41710",
+  "telefono" : "622409533"
+} ]

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - Mendashop</title>
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* GENERAL */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #f8f8f8;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 40px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 100px;
+  object-fit: contain;
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: #e60000;
+  letter-spacing: 1px;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* CONTENEDOR LOGIN */
+.login-container {
+  background-color: #fff;
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+
+.login-container h2 {
+  font-size: 26px;
+  margin-bottom: 50px;
+  color: #e60000;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 25px;
+}
+
+/* FORMULARIO */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+  border-color: #e60000;
+  outline: none;
+  box-shadow: 0 0 5px rgba(230, 0, 0, 0.2);
+}
+
+/* BOTÓN */
+.btn-submit {
+  background-color: #e60000;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+  background-color: #c00000;
+}
+
+/* ENLACE DE REGISTRO */
+.register-link {
+  font-size: 14px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.register-link a {
+  color: #e60000;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+  color: #777;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 25px;
+  }
+  .brand {
+    font-size: 20px;
+  }
+  .logo {
+    width: 40px;
+  }
+}
+
+    </style>
+
+</head>
+<body>
+  
+  <!-- CABECERA -->
+  <header class="header">
+    <div class="header-container">
+      <img src="img/Logo.png" alt="Logo Mendashop" class="logo">
+    </div>
+  </header>
+
+  <!-- CUERPO -->
+  <main class="main">
+    <div class="login-container">
+      <h2><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</h2>
+
+      <form action="login" method="post" class="form">
+        <div class="form-group">
+          <label for="username">Nombre de usuario *</label>
+          <input type="text" id="username" name="login[]" placeholder="Tu nombre de usuario" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña *</label>
+          <input type="password" id="password" name="login[]" placeholder="Tu contraseña" required>
+        </div>
+
+        <input type="submit" value="Entrar" class="btn-submit">
+
+        <p class="register-link">¿No tienes cuenta? <a href="registrarse.html">Regístrate aquí</a></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- PIE DE PÁGINA -->
+  <footer class="footer">
+    <p>© 2025 Mendashop. Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+</html>

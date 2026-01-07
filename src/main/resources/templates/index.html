@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MendoShop | Productos</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="shortcut icon" href="../static/img/Logo.png" type="image/x-icon">
+  <style>
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast, .toast-success {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.5s forwards, fadeOut 0.5s 2.5s forwards;
+    }
+
+    .toast { background: #e41e26; }
+    .toast-success { background: #4caf50; }
+
+    .toast::before { content: "\f071"; font-family: "Font Awesome 6 Free"; font-weight: 900; }
+    .toast-success::before { content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900; }
+
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(20px); } }
+  </style>
+</head>
+
+<body>
+
+<header class="top-bar">
+  <div class="logo-section">
+    <a href="index.html"><img src="img/Logo.png" alt="MendoShop Logo" class="logo"></a>
+  </div>
+
+  <div class="search-section">
+    <form th:action="@{/buscar}" method="get">
+      <button class="search-icon" type="submit"><i class="fas fa-search"></i></button>
+      <input type="text" name="query" placeholder="Buscar productos..." th:value="${query}">
+    </form>
+  </div>
+
+  <nav class="user-section">
+    <p th:if="${session.usuario != null}">Bienvenido <span th:text="${session.usuario.getNombre()}"></span></p>
+    <a th:if="${session.usuario == null}" href="login.html"><i class="fas fa-user"></i> <span>Inicia sesión</span></a>
+    <a th:if="${session.usuario != null}" href="cerrar_sesion"><i class="fas fa-user"></i> <span>Cerrar sesión</span></a>
+    <a th:href="@{/pedidos}"><i class="fas fa-box"></i> <span>Mis pedidos</span></a>
+    <a th:href="@{/carrito}"><i class="fas fa-shopping-cart"></i>
+      <span id="total-carrito" th:text="${session.total != null ? session.total + ' €' : '0.00 €'}"></span>
+    </a>
+  </nav>
+</header>
+
+<h1 class="tittle-h1">¡Nuestros Productos!</h1>
+
+<div class="filtro-container">
+  <form action="#" th:action="@{/ordenar}" method="post">
+    <label for="ordenar">Ordenar por:</label>
+    <select name="criterio" id="ordenar">
+      <option value="nombre" th:selected="${criterioSeleccionado == 'nombre'}">Nombre (A-Z)</option>
+      <option value="nombre-desc" th:selected="${criterioSeleccionado == 'nombre-desc'}">Nombre (Z-A)</option>
+      <option value="precio" th:selected="${criterioSeleccionado == 'precio'}">Precio (Menor a Mayor)</option>
+      <option value="precio-desc" th:selected="${criterioSeleccionado == 'precio-desc'}">Precio (Mayor a Menor)</option>
+      <option value="categoria" th:selected="${criterioSeleccionado == 'categoria'}">Categoría</option>
+      <option value="descuento" th:selected="${criterioSeleccionado == 'descuento'}">Con Descuento</option>
+    </select>
+    <input type="submit" value="Ordenar" class="btn-ordenar">
+  </form>
+</div>
+
+<main class="main">
+  <section class="producto" th:each="p : ${productos}" th:if="${p.getStock() > 0}">
+    <div class="producto-img">
+      <img th:src="${p.getUrlImagen()}" th:alt="${p.getNombre()}">
+    </div>
+    <div class="producto-info">
+      <h1 class="producto-nombre" th:text="${p.getNombre()}"></h1>
+      <p class="producto-descripcion" th:text="${p.getDescripcion()}"></p>
+
+      <div class="precio-container" th:if="${p.esElegibleDescuento()}">
+        <div class="precio-superior">
+          <span class="precio-tachado" th:text="${#numbers.formatDecimal(p.getPrecio()*p.getPeso(),1,'COMMA',2,'POINT')+' €'}"></span>
+          <span class="etiqueta-descuento" th:text="${p.getPorcentajeDescuento()+'% dto.'}"></span>
+        </div>
+        <div class="precio-inferior">
+          <span class="precio-total" th:text="${#numbers.formatDecimal(p.aplicarDescuento(),1,'COMMA',2,'POINT')+' €'}"></span>
+          <span class="precio-kilo" th:text="${'('+p.getPrecio()+' €/KILO)'}"></span>
+        </div>
+      </div>
+
+      <div class="precio-container" th:unless="${p.esElegibleDescuento()}">
+        <div class="precio-inferior">
+          <span class="precio-total" th:text="${#numbers.formatDecimal(p.getPrecio()*p.getPeso(),1,'COMMA',2,'POINT')+' €'}"></span>
+          <span class="precio-kilo" th:text="${'('+p.getPrecio()+' €/KILO)'}"></span>
+        </div>
+      </div>
+    </div>
+
+    <form th:onsubmit="|event.preventDefault(); agregarProducto(${p.getId()});|">
+      <input type="submit" value="Añadir">
+    </form>
+  </section>
+</main>
+
+<div id="toast-container"></div>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-logo">MENDOSHOP</div>
+    <div class="footer-social">
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    </div>
+    <div class="footer-links">
+      <a href="#">Política de privacidad</a>
+      <a href="#">Política de cookies</a>
+      <a href="#">Aviso legal</a>
+      <a href="#">Condiciones de compra</a>
+    </div>
+    <div class="footer-copy">© 2025 Mendashop. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<script>
+function mostrarToast(mensaje, exito = false) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = exito ? 'toast-success' : 'toast';
+  toast.textContent = mensaje;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function agregarProducto(productoId) {
+  fetch('/agregar?productoId=' + productoId, {
+    method: 'POST'
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.error) {
+      mostrarToast(data.error, false);
+    } else {
+      mostrarToast("Producto agregado al carrito", true);
+      document.getElementById('total-carrito').textContent = data.total + " €";
+    }
+  })
+  .catch(err => mostrarToast("Error al agregar producto", false));
+}
+
+// Inicializar total desde sesión al cargar
+document.addEventListener('DOMContentLoaded', function() {
+  const totalSpan = document.getElementById('total-carrito');
+  if(totalSpan && !totalSpan.textContent) totalSpan.textContent = '0.00 €';
+});
+</script>
+
+</body>
+</html>

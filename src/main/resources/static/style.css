@@ -1,0 +1,493 @@
+/* ======= ESTILOS GENERALES ======= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #fff;
+}
+
+/* ====== ESTILOS GENERALES ====== */
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-color: white;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* ====== CONTENEDOR PRINCIPAL ====== */
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.tittle-h1 {
+  margin: 2rem;
+}
+
+.filtro-container {
+  max-width: 1200px;
+  margin: 0 auto 20px auto;
+  padding: 0 20px;
+}
+
+.filtro-container form {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.filtro-container label {
+  font-weight: bold;
+  color: #333;
+  font-size: 16px;
+}
+
+.filtro-container select {
+  padding: 10px 15px;
+  border: 2px solid #e41e26;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.filtro-container select:hover {
+  background: #f8f9fa;
+  border-color: #e41e26;
+}
+
+.filtro-container select:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-ordenar {
+  padding: 10px 20px;
+  background: #e41e26;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-ordenar:hover {
+  background: #e41e26;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .filtro-container form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtro-container select {
+    min-width: auto;
+  }
+}
+
+/* ====== TARJETA DE PRODUCTO (COMPACTO POR DEFECTO) ====== */
+.producto {
+  width: 230px;
+  border: 2px solid #e41e26;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 340px;
+  padding-bottom: 50px;
+}
+
+.producto:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== CLASE PARA AUMENTAR ALTURA CUANDO HAY ERROR (SÓLO ESTA TARJETA CRECE) ===== */
+.has-error {
+  padding-bottom: 100px;
+}
+
+/* ====== IMAGEN DEL PRODUCTO ====== */
+.producto-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+  padding: 1rem;
+  height: 160px;
+}
+
+.producto-img img {
+  width: 100%;
+  max-height: 140px;
+  object-fit: contain;
+}
+
+/* ====== INFORMACIÓN DEL PRODUCTO (Ajustado) ====== */
+.producto-info {
+  padding: 1rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+}
+
+.producto-nombre {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0.3rem 0;
+}
+
+/* FIX: Descripción sin flex-grow para evitar la excesiva separación del precio */
+.producto-descripcion {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.4rem 0;
+}
+
+/* ====== CONTENEDOR DE PRECIOS ====== */
+.precio-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Línea superior: precio tachado + etiqueta de descuento */
+.precio-superior {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.precio-tachado {
+  text-decoration: line-through;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.etiqueta-descuento {
+  background-color: #e41e26;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
+
+/* Línea inferior: precio real + €/KILO */
+.precio-inferior {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.precio-total {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.precio-kilo {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/* ===== MENSAJE DE ERROR (POSICIÓN FINAL DENTRO DE .has-error) ===== */
+.alert-error {
+  position: absolute;
+  bottom: 50px;
+  left: 10px;
+  width: 90%;
+  max-width: 210px;
+  background: linear-gradient(135deg, #ff5f6d, #ffc371);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.4s ease-out;
+  margin: 0;
+}
+
+.alert-error p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.alert-error p::before {
+  content: "\f071";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== BOTÓN DE AÑADIR (POSICIÓN FINAL) ====== */
+.producto form {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.producto form input[type="submit"] {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  width: auto;
+}
+
+.producto form input[type="submit"]:hover {
+  background-color: #e41e26;
+  transform: scale(1.03);
+}
+
+/* ===== CLASE PARA OCULTAR EL MENSAJE (Necesaria para JavaScript) ===== */
+.hidden {
+  display: none;
+}
+
+/* ======= HEADER PRINCIPAL & FOOTER (Sin cambios) ======= */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 25px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.menu-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.menu-section i {
+  font-size: 18px;
+  color: #333;
+}
+
+.menu-section span {
+  color: #333;
+  font-weight: 500;
+}
+
+.logo-section .logo {
+  width: 100px;
+}
+
+.search-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.search-section form {
+  display: flex;
+  width: 100%;
+  max-width: 600px;
+}
+
+.search-section input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  font-size: 14px;
+}
+
+.search-icon {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px 0 0 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.search-icon:hover {
+  background-color: #d32f2f;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-section a,
+p {
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.user-section a:hover {
+  color: #d32f2f;
+}
+
+.user-section i {
+  font-size: 16px;
+}
+
+@media (max-width: 992px) {
+  .search-section {
+    max-width: 400px;
+  }
+
+  .user-section span {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .menu-section {
+    order: 1;
+  }
+
+  .logo-section {
+    order: 2;
+  }
+
+  .search-section {
+    order: 3;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .user-section {
+    order: 4;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+footer {
+  background-color: #ffffff;
+  border-top: 1px solid #ddd;
+  padding: 40px 20px 20px;
+  color: #333;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #e60000;
+  margin-bottom: 20px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.footer-social a {
+  text-decoration: none;
+  color: #555;
+  font-size: 24px;
+  transition: color 0.3s;
+}
+
+.footer-social a:hover {
+  color: #e60000;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.footer-links a {
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: #e60000;
+}
+
+.footer-copy {
+  font-size: 13px;
+  color: #888;
+}
+
+@media (max-width: 600px) {
+  .footer-social {
+    gap: 15px;
+  }
+  .footer-links {
+    gap: 15px;
+  }
+}
