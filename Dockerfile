@@ -12,4 +12,4 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 EXPOSE 8080
-ENTRYPOINT ["/wait-for-it.sh", "mysqldb:3306", "--timeout=60", "--strict", "--", "java", "-jar", "app.jar"]
+ENTRYPOINT ["./wait-for-it.sh", "${DB_HOST}:3306", "--", "java", "-jar", "app.jar"]
